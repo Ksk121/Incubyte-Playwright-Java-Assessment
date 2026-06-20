@@ -3,20 +3,18 @@ package stepdefinitions;
 import hooks.Hooks;
 import io.cucumber.java.en.*;
 import pages.HomePage;
-import pages.LoginPage;
 import pages.RegisterPage;
 import utils.TestDataGenerator;
 
 public class RegisterSteps {
 
-    private static String username;
-    private static final String password = TestDataGenerator.PASSWORD;
+    private String username;
+
+    private final String password =
+            TestDataGenerator.PASSWORD;
 
     RegisterPage registerPage =
             new RegisterPage(Hooks.page);
-
-    LoginPage loginPage =
-            new LoginPage(Hooks.page);
 
     HomePage homePage =
             new HomePage(Hooks.page);
@@ -37,7 +35,12 @@ public class RegisterSteps {
     @When("User enters valid registration details")
     public void user_enters_valid_registration_details() {
 
-        username = TestDataGenerator.generateUsername();
+        username =
+                TestDataGenerator.generateUsername();
+
+        System.out.println(
+                "Generated Username : "
+                        + username);
 
         registerPage.registerUser(
                 username,
@@ -47,60 +50,22 @@ public class RegisterSteps {
     @Then("User account should be created successfully")
     public void user_account_should_be_created_successfully() {
 
-        if (!registerPage.isRegistrationSuccessful()) {
-            throw new RuntimeException(
+        if (!registerPage
+                .isRegistrationSuccessful()) {
+
+            throw new AssertionError(
                     "Registration failed");
-        }
-
-        System.out.println(
-                "Registration Successful");
-    }
-
-    @Given("User is on ParaBank login page")
-    public void user_is_on_login_page() {
-
-        Hooks.page.navigate(
-                "https://parabank.parasoft.com/parabank/index.htm?ConnType=JDBC");
-    }
-
-    @When("User enters newly registered credentials")
-    public void user_enters_registered_credentials() {
-
-        loginPage.login(
-                username,
-                password);
-    }
-
-    @Then("User should be logged into the application")
-    public void user_should_be_logged_in() {
-
-        if (!loginPage.isLoginSuccessful()) {
-            throw new RuntimeException(
-                    "Login failed");
-        }
-
-        System.out.println(
-                "Login Successful");
-    }
-
-    @Given("User is logged into ParaBank application")
-    public void user_is_logged_into_application() {
-
-        if (!loginPage.isLoginSuccessful()) {
-
-            loginPage.login(
-                    username,
-                    password);
         }
     }
 
     @Then("User should see account overview page")
     public void user_should_see_account_overview_page() {
 
-        if (!homePage.isAccountOverviewDisplayed()) {
+        if (!homePage
+                .isAccountOverviewDisplayed()) {
 
-            throw new RuntimeException(
-                    "Account overview page not displayed");
+            throw new AssertionError(
+                    "Account Overview not displayed");
         }
     }
 
@@ -111,7 +76,7 @@ public class RegisterSteps {
                 homePage.getAccountBalance();
 
         System.out.println(
-                "Account Balance = "
+                "Account Balance : "
                         + balance);
     }
 }
